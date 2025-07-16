@@ -1,0 +1,99 @@
+services:
+  frontend:
+    image: microbench:v3
+    environment:
+      - BENCH_NAME=cascade
+      - CNI=none
+    command:
+      - -name=frontend
+      - -out=serviceA,serviceB
+      - -is-frontend=true
+      - -delay=0ms
+      - -pprof
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    ports:
+      - "8000:8000"
+      - "50051:50051"
+      - "6060:6060"
+
+  serviceA:
+    image: microbench:v3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - BENCH_NAME=cascade
+      - CNI=none
+    command:
+      - -name=serviceA
+      - -out=serviceC,serviceD
+      - -delay=0ms
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    ports:
+      - "8001:8000"
+      - "50052:50051"
+      - "6061:6060"
+
+  serviceB:
+    image: microbench:v3
+    environment:
+      - BENCH_NAME=cascade
+      - CNI=none
+    command:
+      - -name=serviceB
+      - -out=serviceC,serviceD
+      - -delay=0ms
+      - -pprof
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    ports:
+      - "8002:8000"
+      - "50053:50051"
+      - "6062:6060"
+
+  serviceC:
+    image: microbench:v3
+    environment:
+      - BENCH_NAME=cascade
+      - CNI=none
+    command:
+      - -name=serviceC
+      - -delay=0ms
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    ports:
+      - "8003:8000"
+      - "50054:50051"
+      - "6063:6060"
+
+  serviceD:
+    image: microbench:v3
+    environment:
+      - BENCH_NAME=cascade
+      - CNI=none
+    command:
+      - -name=serviceD
+      - -delay=0ms
+      - -pprof
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    ports:
+      - "8004:8000"
+      - "50055:50051"
+      - "6064:6060"
+
+networks:
+  default:
+    name: cascade-network

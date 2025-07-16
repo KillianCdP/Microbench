@@ -1,0 +1,17 @@
+// service.proto
+syntax = "proto3";
+
+package benchmark;
+
+option go_package = "pkg/proto";
+
+service BenchmarkService {
+  rpc Process(Message) returns (Message) {}
+}
+
+message Message {
+  string bench_id = 1;
+  string from = 2;
+  string trace_id = 3;
+  int32 depth = 4;
+}
