@@ -166,10 +166,10 @@ func (s *Service) Process(ctx context.Context, req *pb.Message) (*pb.Message, er
 			resp, err := s.callService(ctx, serviceName, req.BenchId, req.TraceId, thisDepth)
 			if err != nil {
 				errors <- err
-			} else {
+			} else if resp != nil {
 				responses <- resp
+				s.tracer.LogTrace("req_resp", resp.BenchId, resp.TraceId, resp.From)
 			}
-			s.tracer.LogTrace("req_resp", resp.BenchId, resp.TraceId, resp.From)
 		}(outService)
 	}
 
